@@ -32,39 +32,6 @@ links[which(links == "https://www.bgse.uni-bonn.desimon-rother/")] = "https://ww
 # first define data structure
 supervisor_table = data.frame(first_names, last_names, links, stringsAsFactors = FALSE)
 
-### OUTDATED
-# find_supervisor = function(student_url){
-#   url = student_url
-#   doc = read_html(url)
-#   # THIS PART IS BROKEN - THEY HAVE RESTRUCTURED!!!
-#   content = as.character(html_nodes(doc,"#parent-fieldname-text p"))
-#   supervisors = c()
-#   for(i in 1:length(content)){
-#     if (regexpr("supervisor", content[i])[1] != -1){
-#       supervisor = substr(content[i], regexpr("\">", content[i]) + 2, regexpr("</a>", content[i])-1)
-#       supervisors = append(supervisors,supervisor,after = length(supervisors))
-#     }
-#   }
-#   return(supervisors)
-# }
-
-
-### NEW Find Supervisor function
-# find_supervisor = function(student_url){
-#   url = student_url
-#   doc = read_html(url)
-#   content = as.character(html_nodes(doc,"#parent-fieldname-text p"))
-#   supervisors = c()
-#   for(i in 1:length(content)){
-#     if (regexpr("supervisor", content[i])[1] != -1){ #-1 if not contained, supervisor name in next line
-#       supervisor = substr(content[i+1], regexpr("\">", content[i+1]) + 2, regexpr("</a>", content[i+1])-1) #-1 to remove ">"
-#       supervisors = append(supervisors,supervisor,after = length(supervisors))
-#     }
-#   }
-#   return(supervisors)
-# }
-
-
 ## Working Supervisor Function - switch from <p> as identifier to <td> as identifier - identifies more than that with p
 find_supervisor = function(student_url){
   url = student_url
