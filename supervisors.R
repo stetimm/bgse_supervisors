@@ -9,17 +9,27 @@ require("openxlsx")
 url = "https://www.bgse.uni-bonn.de/en/people/student-directory"
 doc = read_html(url)
 
-column = as.character(html_nodes(doc,"td:nth-child(1)"))
+column = as.character(html_nodes(doc,"td:nth-child(1)")) # just extracts the first column of the directory
 links = c()
 first_names = c()
 last_names =c()
+
+# in this loop we assemble the URL of the personal page of each BGSE student listed in the directory
+# this is done by extracting the link shown for each name on https://www.bgse.uni-bonn.de/en/people/student-directory
+
 for(i in 1:length(column)){
-  if (substr(column[i],1,6) == "<td><a"){
+  # identify a row in the column that contains a link
+  if (substr(column[i],1,6) == "<td><a"){ 
+    # assemble URL
     url = paste("https://www.bgse.uni-bonn.de", substring(column[i], regexpr("f=\"", column[i]) + 3, regexpr("\">", column[i])-1),sep = "")
-    temp = substring(column[i],regexpr("\">", column[i]) + 2, nchar(column[i])) # doing this in two steps because they are irregular
+    # doing this in two steps because they are irregular
+    temp = substring(column[i],regexpr("\">", column[i]) + 2, nchar(column[i])) 
+    
     name_full = substr(temp, 0, regexpr("<", temp)-1) # this is the name in Lastname, Firstname Format
+    # identify first and last name 
     first_name = substr(name_full, regexpr(",", temp)+2, nchar(name_full))
     last_name = substr(name_full, 0, regexpr(",", temp)-1)
+    # save URL, first, and last name
     links = append(links, url, after = length(links))
     first_names = append(first_names, first_name)
     last_names = append(last_names, last_name)
