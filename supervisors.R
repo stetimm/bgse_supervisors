@@ -49,6 +49,8 @@ find_supervisor = function(student_url){
 
 raw_supervisors = lapply(supervisor_table$links,find_supervisor)
 
+# TODO: this is ugly as shit...
+
 s1 = c()
 
 for(i in 1:length(raw_supervisors)){
