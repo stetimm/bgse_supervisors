@@ -49,19 +49,36 @@ find_supervisor = function(student_url){
   doc = read_html(url)
   content = as.character(html_nodes(doc,"#parent-fieldname-text td"))
   supervisors = c()
+  fellows = c()
   for(i in 1:length(content)){
     if (regexpr("supervisor", content[i])[1] != -1){ #-1 if not contained, if contained supervisor name 2 elements further
       supervisor = substr(content[i+2], regexpr("\">", content[i+2]) + 2, regexpr("</a>", content[i+2])-1) #i+2 to capter 2 elements further, +2 after regex to remove ">, -1 after regex to remove ">"
       supervisors = append(supervisors,supervisor,after = length(supervisors))
     }
+    # read fellow - works
+    if (regexpr("fellow", content[i])[1] != -1){#-1 if not contained, if contained fellow information in this element
+      fellow = substr(content[i],regexpr("<p>",content[i])+3, regexpr("fellow", content[i])+5)
+      fellows = append(fellows,fellow,after = length(fellows))
+    }
   }
-  return(supervisors)
+  return(list(supervisors, fellows))
 }
-
 
 raw_supervisors = lapply(supervisor_table$links,find_supervisor)
 
 # TODO: the following is ugly as shit...
+# need to manage the returned list now, contains supervisors and fellow information
+# supervisors are stored in [[1]][[1]], fellow information in [[1]][[2]]
+# updated code should do something like 
+
+inspect = raw_supervisors[194] # may not even need to unlist
+# get supervisors
+sup = inspect[[1]][[1]]
+# can take out 1st, 2nd and 3rd element of sup  as needed
+fel = inspect[[1]][[2]]
+# can take out 1st, 2nd and 3rd fellow element of fel as needed
+
+
 
 s1 = c()
 
