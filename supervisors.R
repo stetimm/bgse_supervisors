@@ -44,6 +44,7 @@ supervisor_table = data.frame(first_names, last_names, links, stringsAsFactors =
 
 ## Working Supervisor Function - switch from <p> as identifier to <td> as identifier - identifies more than that with p
 find_supervisor = function(student_url){
+  # TODO: Also scrape whether student fellow and which?
   url = student_url
   doc = read_html(url)
   content = as.character(html_nodes(doc,"#parent-fieldname-text td"))
@@ -57,9 +58,10 @@ find_supervisor = function(student_url){
   return(supervisors)
 }
 
+
 raw_supervisors = lapply(supervisor_table$links,find_supervisor)
 
-# TODO: this is ugly as shit...
+# TODO: the following is ugly as shit...
 
 s1 = c()
 
@@ -92,6 +94,7 @@ for(i in 1:length(raw_supervisors)){
   }
 }
 
+# now add supervisors to big table
 supervisor_table$s1 = s1
 supervisor_table$s2 = s2
 supervisor_table$s3 = s3
@@ -100,6 +103,8 @@ colnames(supervisor_table) = c("First Name", "Last Name", "URL", "Supervisor 1",
 # issue, some supervisors are just "" due to different HTML, not sure how to catch these exceptions. Maybe just flag for now?
 issues = supervisor_table[c(which(supervisor_table$'Supervisor 1' ==""), which(supervisor_table$'Supervisor 2' ==""), which(supervisor_table$'Supervisor 3' =="")),]
 # need to fix these manually
+# Idea to fix this: strings for these links are super long and contain multiple href (or whatever identifier I used) - just add an additional if clause or something that catches this and then treat accordingly
+# TODO: implement idea from above
 
 # export
 # write.csv(supervisor_table, file = "bgse_supervisors.csv", row.names = FALSE, fileEncoding = "UTF-8")
