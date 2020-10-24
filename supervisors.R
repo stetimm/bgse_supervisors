@@ -51,6 +51,7 @@ supervisor_table = data.frame(first_names, last_names, starting_years, links, st
 supervisor_table[c("first_supervisor","second_supervisor","third_supervisor","first_fellow","second_fellow","third_fellow")] = NA
 
 # then go through each row in data frame, scrape info on supervisor and fellow and populate data frame accordingly
+# the many if statements are ther eto addreess the various small inconsistencies they have in the html code. 
 for(j in 1:length(supervisor_table$links)){
   doc = read_html(supervisor_table$links[j])
   content = as.character(html_nodes(doc,"#parent-fieldname-text td"))
@@ -60,7 +61,7 @@ for(j in 1:length(supervisor_table$links)){
     # read supervisors - works
     if (regexpr("supervisor", content[i])[1] != -1){ #-1 if not contained, if contained supervisor name 2 elements further
       # catching exceptions 
-      # first if is for screwed up links (if table content is excessively long)
+      # first if is for screwed up links (if table content is excessively long) - this is a bit sketchy to do, but for now catches everything. 
       # second if is for supervisors without link structure (only name but no link)
       if (nchar(content[i+2])>250){ 
         end_of_string = substr(content[i+2], nchar(content[i+2])-50, nchar(content[i+2]))
@@ -83,11 +84,13 @@ for(j in 1:length(supervisor_table$links)){
     }
     # read fellow - works
     if (regexpr("fellow", content[i]) != -1){#-1 if not contained, if contained fellow information in this element
+      # handle one exception where they have irregular html structure
       if (regexpr("<p>", content[i]) != -1){
         fellow = substr(content[i],regexpr("<p>",content[i])+3, regexpr("fellow", content[i])+5)
       } else{
         fellow = substr(content[i],regexpr("\">",content[i])+2, regexpr("fellow", content[i])+5)
       }
+      # now save result
       supervisor_table[j, 8+numfel] = fellow # directly populate first, second or third fellow info column
       numfel = numfel + 1
     }
