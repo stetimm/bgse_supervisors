@@ -1,4 +1,4 @@
-# Packages etc ----
+#### Packages etc ----
 #install.packages("rvest")
 #install.packages("pdftools")
 #install.packages("openxlsx")
@@ -6,7 +6,7 @@ require("rvest")
 require("openxlsx")
 
 
-# scrape links to personal pages  ----
+##### scrape links to personal pages  ----
 url = "https://www.bgse.uni-bonn.de/en/people/student-directory"
 doc = read_html(url)
 
@@ -45,7 +45,7 @@ for(i in 1:length(column)){
 links[which(links == "https://www.bgse.uni-bonn.desimon-rother/")] = "https://www.bgse.uni-bonn.de/en/people/student-directory/simon-rother"
 starting_years[which(starting_years == "ther")] = 2016
 
-# now need to find supervisor(s) and fellow information ----
+#### now need to find supervisor(s) and fellow information ----
 # first define data structure
 supervisor_table = data.frame(first_names, last_names, starting_years, links, stringsAsFactors = FALSE)
 supervisor_table[c("first_supervisor","second_supervisor","third_supervisor","first_fellow","second_fellow","third_fellow")] = NA
@@ -94,39 +94,6 @@ for(j in 1:length(supervisor_table$links)){
   }
 }
 
-
-
-# issue, some supervisors are just "" due to different HTML, not sure how to catch these exceptions. Maybe just flag for now?
-# issues = supervisor_table[c(which(supervisor_table$first_supervisor ==""), which(supervisor_table$second_supervisor ==""), which(supervisor_table$third_supervisor =="")),]
-# need to fix these manually
-# Idea to fix this: strings for these links are super long and contain multiple href (or whatever identifier I used) - just add an additional if clause or something that catches this and then treat accordingly
-# TODO: implement idea from above
-# DONE
-
-test_url = "https://www.bgse.uni-bonn.de/en/people/student-directory/2017/cavit-goerkem-destan"
-doc = read_html(test_url)
-content = as.character(html_nodes(doc,"#parent-fieldname-text td"))
-for(i in 1:length(content)){
-  # read supervisors - works
-  if (regexpr("supervisor", content[i])[1] != -1){ #-1 if not contained, if contained supervisor name 2 elements further
-    print(i)
-    # try to fix one issue
-    if (nchar(content[i+2])>250){
-      print("caught!")
-      end_of_string = substr(content[i+2], nchar(content[i+2])-50, nchar(content[i+2]))
-      supervisor = substr(end_of_string, regexpr("\">", end_of_string) + 2, regexpr("</a>", end_of_string)-1) #i+2 to capter 2 elements further, +2 after regex to remove ">, -1 after regex to remove ">"
-    }else if(regexpr("</a>", content[i+2]) == -1){
-      supervisor = substr(content[i+2], regexpr("<p>", content[i+2]) + 3, regexpr("</p>", content[i+2])-1)
-    }else{
-      supervisor = substr(content[i+2], regexpr("\">", content[i+2]) + 2, regexpr("</a>", content[i+2])-1) #i+2 to capter 2 elements further, +2 after regex to remove ">, -1 after regex to remove ">"
-    }
-  }
-}
-
-
-# Destan male has issue with fellow info. 
-
-
-# export
+#### export
 # write.csv(supervisor_table, file = "bgse_supervisors.csv", row.names = FALSE, fileEncoding = "UTF-8")
 # write.xlsx(supervisor_table,file = "bgse_supervisors.xlsx", row.names = FALSE, fileEncoding = "UTF-8")
