@@ -5,8 +5,8 @@ account: tobiasherbst
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3096150
-bundleId: 3783184
+bundleId: 3783231
 url: https://tobiasherbst.shinyapps.io/BGSE_students/
-when: 1603715509.76638
+when: 1603716212.7659
 asMultiple: FALSE
 asStatic: FALSE
