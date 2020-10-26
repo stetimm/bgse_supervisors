@@ -1,0 +1,12 @@
+name: BGSE_students
+title: BGSE_students
+username:
+account: tobiasherbst
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3096150
+bundleId: 3783184
+url: https://tobiasherbst.shinyapps.io/BGSE_students/
+when: 1603715509.76638
+asMultiple: FALSE
+asStatic: FALSE
